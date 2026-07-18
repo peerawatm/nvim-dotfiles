@@ -14,6 +14,7 @@ vim.opt.undofile = false
 vim.opt.backup = false
 vim.opt.mouse = ""
 vim.opt.termguicolors = true
+vim.opt.cmdheight = 0
 
 -- Load Plugins and Configs
 require("config.keymaps")

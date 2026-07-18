@@ -70,11 +70,11 @@ require("neo-tree").setup({
     },
     modified = { symbol = "●" },
     file_size = { enabled = true, required_width = 30 },
-    last_modified = { enabled = true, required_width = 45, format = "%b %d %Y %H:%M" },
+    last_modified = { enabled = false, required_width = 48, format = "%b %d %Y %H:%M" },
   },
   window = {
     title = false,
-    width = 58,
+    width = 38,
     mappings = {
       ["<tab>"] = "none",
       ["<space>"] = "none",
