@@ -81,3 +81,28 @@ require("neo-tree").setup({
     },
   },
 })
+
+-- Auto-open neo-tree when nvim starts with no file args
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    if vim.fn.argc() == 0 then
+      require("neo-tree.command").execute({ toggle = false, dir = vim.fn.getcwd() })
+    end
+  end,
+})
+
+-- Watch .git dir via kqueue — refreshes neo-tree git status on index/HEAD changes
+local function watch_git_for_neotree()
+  local git_dir = vim.fn.getcwd() .. '/.git'
+  if vim.fn.isdirectory(git_dir) == 0 then return end
+  local handle = vim.uv.new_fs_event()
+  if not handle then return end
+  handle:start(git_dir, { recursive = false }, vim.schedule_wrap(function(err, filename)
+    if err then return end
+    -- Only react to meaningful git state files
+    if filename == 'index' or filename == 'HEAD' or filename == 'HEAD.lock' or filename == 'COMMIT_EDITMSG' then
+      require("neo-tree.sources.manager").refresh("filesystem")
+    end
+  end))
+end
+watch_git_for_neotree()

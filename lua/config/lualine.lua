@@ -1,25 +1,27 @@
 -- Detect project version from Cargo.toml (Rust) or #define VERSION headers (C)
+local _project_version_cache = ""
 local function project_version()
+  return _project_version_cache
+end
+local function _update_project_version()
   local root = vim.fn.getcwd()
   for _, dir in ipairs({ root, vim.fn.expand("%:p:h"), vim.fn.expand("%:p:h:h") }) do
     if dir == "" then goto continue end
-    -- Try Cargo.toml first
     local f = io.open(dir .. "/Cargo.toml", "r")
     if f then
       for line in f:lines() do
         local v = line:match('^version%s*=%s*"([^"]+)"')
-        if v then f:close(); return "󱘗 " .. v end
+        if v then f:close(); _project_version_cache = "󱘗 " .. v; return end
       end
       f:close()
     else
-      -- Try header files
       for _, pat in ipairs({ dir .. "/src/*.h", dir .. "/include/*.h", dir .. "/*.h" }) do
         for _, path in ipairs(vim.fn.glob(pat, false, true)) do
           f = io.open(path, "r")
           if f then
             for line in f:lines() do
               local v = line:match('#define%s+%w+_VERSION%s+"(.-)"')
-              if v then f:close(); return "󰏗 " .. v end
+              if v then f:close(); _project_version_cache = "󰏗 " .. v; return end
             end
             f:close()
           end
@@ -28,37 +30,40 @@ local function project_version()
     end
     ::continue::
   end
-  return ""
+  _project_version_cache = ""
 end
+
+local _git_head_cache = ""
 local function git_head_id()
+  return _git_head_cache
+end
+local function _update_git_head()
   local dir = vim.fn.expand("%:p:h")
   if dir == "" then dir = vim.fn.getcwd() end
   local cmd = string.format("git -C %s rev-parse --short HEAD 2>/dev/null", vim.fn.shellescape(dir))
   local head = vim.fn.systemlist(cmd)[1]
   if vim.v.shell_error ~= 0 or head == nil or head == "" then
-    return ""
+    _git_head_cache = ""
+  else
+    _git_head_cache = " " .. head
   end
-  return " " .. head
 end
 
--- We will execute the exact logic that was in your opts function
-local is_dark = vim.o.background == "dark"
-local bg = is_dark and "NONE" or "#FFFFFF"
-local fg = is_dark and "#aaaaaa" or "#000000"
-local sub = is_dark and "#666666" or "#444444"
-local detail = is_dark and "#555555" or "#888888"
+-- Update caches on buffer/focus events only, not on every lualine tick
+vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained" }, {
+  callback = function()
+    _update_git_head()
+    _update_project_version()
+  end,
+})
+_update_git_head()
+_update_project_version()
 
 require('lualine').setup({
   options = {
     globalstatus = true,
-    theme = {
-      normal   = { a = { bg = bg, fg = fg }, b = { bg = bg, fg = sub }, c = { bg = bg, fg = detail }, x = { bg = bg, fg = detail }, y = { bg = bg, fg = detail }, z = { bg = bg, fg = detail } },
-      insert   = { a = { bg = bg, fg = fg }, b = { bg = bg, fg = sub }, c = { bg = bg, fg = detail }, x = { bg = bg, fg = detail }, y = { bg = bg, fg = detail }, z = { bg = bg, fg = detail } },
-      visual   = { a = { bg = bg, fg = fg }, b = { bg = bg, fg = sub }, c = { bg = bg, fg = detail }, x = { bg = bg, fg = detail }, y = { bg = bg, fg = detail }, z = { bg = bg, fg = detail } },
-      replace  = { a = { bg = bg, fg = fg }, b = { bg = bg, fg = sub }, c = { bg = bg, fg = detail }, x = { bg = bg, fg = detail }, y = { bg = bg, fg = detail }, z = { bg = bg, fg = detail } },
-      command  = { a = { bg = bg, fg = fg }, b = { bg = bg, fg = sub }, c = { bg = bg, fg = detail }, x = { bg = bg, fg = detail }, y = { bg = bg, fg = detail }, z = { bg = bg, fg = detail } },
-      inactive = { a = { bg = bg, fg = sub }, b = { bg = bg, fg = sub }, c = { bg = bg, fg = sub }, x = { bg = bg, fg = sub }, y = { bg = bg, fg = sub }, z = { bg = bg, fg = sub } },
-    },
+    refresh = { statusline = 1e9, tabline = 1e9, winbar = 1e9 }, -- disable timer
+    theme = "auto",
     component_separators = " ",
     section_separators = "",
     disabled_filetypes = {
@@ -74,3 +79,27 @@ require('lualine').setup({
     lualine_z = {},
   }
 })
+
+-- Event-driven refresh instead of timer
+local lualine = require('lualine')
+vim.api.nvim_create_autocmd({
+  "ModeChanged", "BufEnter", "BufWritePost", "BufModifiedSet",
+  "CursorMoved", "CursorMovedI", "DiagnosticChanged", "FocusGained",
+}, {
+  callback = function() lualine.refresh() end,
+})
+
+-- Watch .git dir via kqueue — catches git's full write sequence earlier
+local function watch_git_head()
+  local git_dir = vim.fn.getcwd() .. '/.git'
+  if vim.fn.isdirectory(git_dir) == 0 then return end
+  local handle = vim.uv.new_fs_event()
+  if not handle then return end
+  handle:start(git_dir, { recursive = false }, vim.schedule_wrap(function(err, filename)
+    if not err and (filename == 'HEAD' or filename == 'HEAD.lock') then
+      _update_git_head()
+      lualine.refresh()
+    end
+  end))
+end
+watch_git_head()
