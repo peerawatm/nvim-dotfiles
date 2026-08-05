@@ -33,3 +33,36 @@ vim.lsp.config('rust_analyzer', {
 
 -- Enable the server for current/future buffers
 vim.lsp.enable('rust_analyzer')
+
+-- Setup lua_ls using the modern API
+vim.lsp.config('lua_ls', {
+  cmd = { 'lua-language-server' },
+  filetypes = { 'lua' },
+  root_markers = { '.git', 'init.lua' },
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim', 'Snacks' },
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+      telemetry = { enable = false },
+    },
+  },
+})
+
+-- Enable the server for current/future buffers
+vim.lsp.enable('lua_ls')
+
+-- Setup clangd using the modern API
+vim.lsp.config('clangd', {
+  cmd = { 'clangd' },
+  filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
+  root_markers = { '.clang-format', 'compile_commands.json', 'CMakeLists.txt', '.git' },
+})
+
+-- Enable the server for current/future buffers
+vim.lsp.enable('clangd')
+

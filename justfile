@@ -1,3 +1,4 @@
+default:update
 update:
     @if [ ! -f updater/target/release/updater ] || \
         [ updater/src/main.rs -nt updater/target/release/updater ] || \
