@@ -1,1 +1,6 @@
-# Reference: https://neovim.io/doc/user/lua/
+# nvim-dotfiles
+
+My Neovim configurations in ~/.config/nvim.
+
+## init.lua
+[init.lua](./init.lua)
