@@ -15,6 +15,11 @@ async fn main() {
         .filter(|p| p.is_dir() && p.join(".git").exists())
         .collect();
 
+    if plugins.is_empty() {
+        println!("No git plugin repositories found in pack/manual/start.");
+        return;
+    }
+
     let mut set = JoinSet::new();
     for path in plugins {
         set.spawn(update_plugin(path));
@@ -80,7 +85,17 @@ async fn do_update(path: &Path) -> Result<(String, String, String), String> {
 
     let _ = git(
         path,
-        &["-c", "gc.auto=0", "pull", "-q", "--no-tags", "--recurse-submodules=no", "origin", &branch],
+        &[
+            "-c",
+            "gc.auto=0",
+            "pull",
+            "-q",
+            "--depth=1",
+            "--no-tags",
+            "--recurse-submodules=no",
+            "origin",
+            &branch,
+        ],
     )
     .await?;
 

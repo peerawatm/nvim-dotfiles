@@ -62,65 +62,12 @@ local function setup_syntax()
   hl(0, "Type", { fg = colors.type })
 end
 
-local function setup_icons()
-  local is_dark = vim.o.background == "dark"
-  local grey = is_dark and "#666666" or "#888888"
-
-  local icon_colors = {
-    Azure  = "#00599C", -- Official C++ Blue
-    Blue   = "#004482", -- Official C Deep Blue
-    Cyan   = is_dark and "#00FFFF" or "#00ADD8",
-    Green  = grey, -- Neutralize green icons
-    Grey   = grey,
-    Orange = is_dark and "#FFA500" or "#E34F26",
-    Purple = is_dark and "#FF00FF" or "#800080",
-    Red    = "#FF0000",
-    Yellow = "#F7DF1E", -- Official JS Yellow
-    }
-  for name, color in pairs(icon_colors) do
-    vim.cmd(string.format("hi MiniIcons%s guifg=%s gui=NONE", name, color))
-  end
-end
-
-local function setup_neotree_hl()
-  local is_dark = vim.o.background == "dark"
-  local hl = vim.api.nvim_set_hl
-  local fg = is_dark and "#FFFFFF" or "#000000"
-  local sub_fg = is_dark and "#888888" or "#666666"
-  local float_bg = is_dark and "#111111" or "#FFFFFF"
-  local float_border = is_dark and "#444444" or "#000000"
-
-  -- Sidebar
-  hl(0, "NeoTreeNormal",        { fg = fg, bg = "NONE" })
-  hl(0, "NeoTreeNormalNC",      { fg = fg, bg = "NONE" })
-  hl(0, "NeoTreeDirectoryName", { fg = fg, bold = true })
-  hl(0, "NeoTreeDirectoryIcon", { fg = sub_fg })
-  hl(0, "NeoTreeFileName",      { fg = fg })
-  hl(0, "NeoTreeExpander",      { fg = sub_fg })
-  hl(0, "NeoTreeGitAdded",      { fg = fg })
-  hl(0, "NeoTreeGitConflict",   { fg = fg, bold = true })
-  hl(0, "NeoTreeGitDeleted",    { fg = sub_fg })
-  hl(0, "NeoTreeGitIgnored",    { fg = sub_fg })
-  hl(0, "NeoTreeGitModified",   { fg = fg })
-  hl(0, "NeoTreeGitUntracked",  { fg = fg, italic = true })
-  -- Floats / popups
-  hl(0, "NeoTreeFloatBorder",   { fg = float_border, bg = float_bg })
-  hl(0, "NeoTreeFloatTitle",    { fg = fg, bg = float_border, bold = true })
-  hl(0, "NormalFloat",          { fg = fg, bg = float_bg })
-  hl(0, "FloatBorder",          { fg = float_border, bg = float_bg })
-  hl(0, "FloatTitle",           { fg = fg, bg = float_border })
-end
-
--- Create an autocmd to re-apply these highlights whenever the theme changes
+-- Create an autocmd to re-apply syntax highlights whenever the theme changes
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
     setup_syntax()
-    setup_icons()
-    setup_neotree_hl()
   end,
 })
 
 -- Initial run
 setup_syntax()
-setup_icons()
-setup_neotree_hl()

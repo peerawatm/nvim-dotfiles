@@ -6,7 +6,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
     local bufnr = args.buf
     local opts = { noremap = true, silent = true, buffer = bufnr }
-    
     -- Navigation
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
@@ -66,3 +65,12 @@ vim.lsp.config('clangd', {
 -- Enable the server for current/future buffers
 vim.lsp.enable('clangd')
 
+-- Setup nil_ls using the modern API
+vim.lsp.config('nil_ls', {
+  cmd = { 'nil' },
+  filetypes = { 'nix' },
+  root_markers = { 'flake.nix', 'default.nix', '.git' },
+})
+
+-- Enable the server for current/future buffers
+vim.lsp.enable('nil_ls')
