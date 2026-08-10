@@ -4,7 +4,6 @@ vim.loader.enable()
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 -- General options
 vim.opt.swapfile = false
@@ -42,5 +41,5 @@ vim.api.nvim_create_user_command("Plugins", function()
   end
 end, {})
 
--- Activate the White colorscheme
-vim.cmd("colorscheme White")
+-- Activate the white colorscheme
+vim.cmd("colorscheme white")

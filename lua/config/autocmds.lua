@@ -1,17 +1,15 @@
--- Skip theme switching for headless or embedded processes
-if #vim.api.nvim_list_uis() == 0 then
-  return
-end
-
 local group = vim.api.nvim_create_augroup("ThemeSync", { clear = true })
 
 _G.sync_theme = function()
+  if #vim.api.nvim_list_uis() == 0 then
+    return
+  end
   local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
   local result = handle:read("*a")
   handle:close()
 
   local is_dark = result:match("Dark") ~= nil
-  local target = is_dark and "Black" or "White"
+  local target = is_dark and "black" or "white"
 
   if vim.g.colors_name ~= target then
     vim.cmd("colorscheme " .. target)
@@ -28,10 +26,10 @@ vim.api.nvim_create_autocmd({ "FocusGained", "VimEnter" }, {
 
 -- Live reload custom theme files on write
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = { "White.lua", "Black.lua" },
+  pattern = { "white.lua", "black.lua" },
   group = group,
   callback = function()
-    vim.cmd("colorscheme " .. (vim.g.colors_name or "White"))
+    vim.cmd("colorscheme " .. (vim.g.colors_name or "white"))
     vim.notify("Theme Reloaded", vim.log.levels.INFO)
   end,
 })
@@ -44,4 +42,13 @@ vim.opt.autoread = true
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
   pattern = "*",
   command = "silent! checktime",
+})
+
+-- Automatically open file picker when Neovim starts with no file arguments
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    if vim.fn.argc() == 0 and vim.api.nvim_buf_get_name(0) == "" then
+      Snacks.picker.files()
+    end
+  end,
 })

@@ -1,6 +1,6 @@
 vim.cmd("hi clear")
 vim.o.background = "dark"
-vim.g.colors_name = "Black"
+vim.g.colors_name = "black"
 
 local hl = vim.api.nvim_set_hl
 local black = "#000000"
@@ -22,6 +22,8 @@ hl(0, "IncSearch", { bg = white, fg = black })
 hl(0, "Pmenu", { bg = dark_grey, fg = white })
 hl(0, "PmenuSel", { bg = white, fg = black })
 hl(0, "VertSplit", { fg = dark_grey })
+hl(0, "NormalFloat", { bg = "NONE", fg = white })
+hl(0, "FloatBorder", { bg = "NONE", fg = grey })
 
 -- Statusline (Black Theme)
 hl(0, "StatusLine", { bg = dark_grey, fg = white, bold = true })

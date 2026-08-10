@@ -1,2 +1,0 @@
-compile:
-	cargo build --release
