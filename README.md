@@ -1,16 +1,9 @@
 # nvim-dotfiles
 
-My Neovim configurations in ~/.config/nvim.
+peerawatm's Neovim configurations in ~/.config/nvim.
 
 ## init.lua
 - [init.lua](./init.lua)
-
-## justfile
-- [justfile](./justfile)
-
-## colors
-- [colors/white.lua](colors/white.lua)
-- [colors/black.lua](colors/black.lua)
 
 ## lua/config
 - [lua/config/autocmds.lua](lua/config/autocmds.lua)
@@ -19,3 +12,10 @@ My Neovim configurations in ~/.config/nvim.
 - [lua/config/snacks.lua](lua/config/snacks.lua)
 - [lua/config/theme.lua](lua/config/theme.lua)
 - [lua/config/treesitter.lua](lua/config/treesitter.lua)
+
+## colors
+- [colors/white.lua](colors/white.lua)
+- [colors/black.lua](colors/black.lua)
+
+## justfile
+- [justfile](./justfile)
