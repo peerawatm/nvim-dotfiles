@@ -60,6 +60,10 @@ local function setup_syntax()
   hl(0, "Function", { fg = colors.func, bold = true })
   hl(0, "String", { fg = colors.str })
   hl(0, "Type", { fg = colors.type })
+
+  -- Fix cursor visibility across dark/light themes
+  hl(0, "Cursor", { fg = is_dark and "#000000" or "#FFFFFF", bg = is_dark and "#FFFFFF" or "#000000" })
+  hl(0, "TermCursor", { fg = is_dark and "#000000" or "#FFFFFF", bg = is_dark and "#FFFFFF" or "#000000" })
 end
 
 -- Create an autocmd to re-apply syntax highlights whenever the theme changes

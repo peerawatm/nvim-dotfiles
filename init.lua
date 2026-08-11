@@ -20,17 +20,30 @@ vim.opt.conceallevel = 2
 vim.opt.list = true
 vim.opt.listchars = { lead = "·", tab = "──▶" }
 vim.opt.statusline = " %f %m %r %= %y %l:%c %p%% "
+vim.opt.wrap = false
 
--- Custom plugins
+-- Core configurations
 require("config.keymaps")
 require("config.autocmds")
-
--- 3rd party plugins
-require("config.treesitter")
-require("config.lsp")
 require("config.theme")
-require("config.snacks")
-require("render-markdown").setup({})
+require("config.lsp")
+
+-- Plugin setups
+require("snacks").setup({
+  bigfile = { enabled = true },
+  dashboard = { enabled = false },
+  notifier = { enabled = true },
+  picker = { enabled = true },
+  quickfile = { enabled = true },
+  statuscolumn = { enabled = true },
+  words = { enabled = true },
+})
+
+require("nvim-treesitter").setup({
+  ensure_installed = { "lua", "vim", "vimdoc", "rust", "python", "nix", "markdown", "markdown_inline" },
+  highlight = { enable = true },
+  indent = { enable = true },
+})
 
 -- Plugins command
 vim.api.nvim_create_user_command("Plugins", function()
@@ -41,5 +54,5 @@ vim.api.nvim_create_user_command("Plugins", function()
   end
 end, {})
 
--- Activate the white colorscheme
+-- Activate initial colorscheme
 vim.cmd("colorscheme white")
