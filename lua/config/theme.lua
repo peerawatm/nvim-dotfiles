@@ -61,6 +61,12 @@ local function setup_syntax()
   hl(0, "String", { fg = colors.str })
   hl(0, "Type", { fg = colors.type })
 
+  -- Mute listchars / indentation markers
+  local ws_color = is_dark and "#2D2D2D" or "#E0E0E0"
+  hl(0, "Whitespace", { fg = ws_color })
+  hl(0, "NonText", { fg = ws_color })
+  hl(0, "SpecialKey", { fg = ws_color })
+
   -- Fix cursor visibility across dark/light themes
   hl(0, "Cursor", { fg = is_dark and "#000000" or "#FFFFFF", bg = is_dark and "#FFFFFF" or "#000000" })
   hl(0, "TermCursor", { fg = is_dark and "#000000" or "#FFFFFF", bg = is_dark and "#FFFFFF" or "#000000" })

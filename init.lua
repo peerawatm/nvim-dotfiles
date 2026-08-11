@@ -18,7 +18,7 @@ vim.opt.cmdheight = 0
 vim.opt.clipboard = "unnamedplus"
 vim.opt.conceallevel = 2
 vim.opt.list = true
-vim.opt.listchars = { lead = "·", tab = "──▶" }
+vim.opt.listchars = { lead = "·", tab = "│ " }
 vim.opt.statusline = " %f %m %r %= %y %l:%c %p%% "
 vim.opt.wrap = false
 

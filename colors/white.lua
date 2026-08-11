@@ -13,6 +13,9 @@ hl(0, "Normal", { bg = white, fg = "#000000" })
 hl(0, "NormalNC", { bg = white, fg = "#000000" })
 hl(0, "CursorLine", { bg = "#F5F5F5" })
 hl(0, "LineNr", { fg = "#CCCCCC" })
+hl(0, "Whitespace", { fg = "#E0E0E0" })
+hl(0, "NonText", { fg = "#E0E0E0" })
+hl(0, "SpecialKey", { fg = "#E0E0E0" })
 hl(0, "EndOfBuffer", { fg = '#FFFFFF' })
 
 -- UI Elements
